@@ -46,8 +46,21 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS':
     'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 3,
-    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_THROTTLE_CLASSES':(
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'anon':'10/hour',
+        'user': '30/hour'
+    },
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
+    )
 }
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -3,6 +3,16 @@ from rest_framework.serializers import ModelSerializer, HyperlinkedIdentityField
 from rest_framework import serializers
 
 
+class UserSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'pk',
+            'username',
+            'is_superuser',
+        )
+
+
 class ProfileSerializer(ModelSerializer):
     url = HyperlinkedIdentityField(
         view_name='profile-details',
