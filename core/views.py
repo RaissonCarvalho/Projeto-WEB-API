@@ -30,21 +30,6 @@ class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     name = 'profile-details'
 
 
-class ItemList(generics.ListCreateAPIView):
-    queryset = Item.objects.all()
-    serializer_class = ItemSerializer
-    name = 'item-list'
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-
-
-class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Item.objects.all()
-    serializer_class = ItemSerializer
-    name = 'item-details'
-
-
 class ApiRoot(generics.GenericAPIView):
     name = 'API'
 
@@ -54,6 +39,5 @@ class ApiRoot(generics.GenericAPIView):
                 'documentation': reverse('documentation', request=request),
                 'users': reverse(UserList.name, request=request),
                 'profiles': reverse(ProfilesList.name, request=request),
-                'itens': reverse(ItemList.name, request=request),
             }
         )

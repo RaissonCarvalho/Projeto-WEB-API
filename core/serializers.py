@@ -46,28 +46,3 @@ class ProfileSerializer(ModelSerializer):
             phone_number=validated_data['phone_number'],
             city=validated_data['city']
         )
-
-class ItemSerializer(ModelSerializer):
-    url = HyperlinkedIdentityField(
-        view_name='item-details',
-        lookup_field='pk'
-    )
-    owner = serializers.HyperlinkedRelatedField(many=False, view_name='profile-details', read_only=True)
-    owner_name = serializers.ReadOnlyField(source='owner.first_name')
-
-    class Meta:
-        model = Item
-        fields = (
-            'url',
-            'owner',
-            'owner_name',
-            'description',
-            'value'
-        )
-
-    def create(self, validated_data):
-        return Item.objects.create(
-            owner=validated_data['owner'],
-            description=validated_data['description'],
-            value=validated_data['value']
-        )

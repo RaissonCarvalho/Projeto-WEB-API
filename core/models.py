@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
+    user = models.OneToOneField('auth.User', related_name='profile', on_delete=models.CASCADE)
     first_name = models.CharField(max_length=35)
     last_name = models.CharField(max_length=35)
     phone_number = models.CharField(max_length=11)
@@ -13,15 +13,10 @@ class Profile(models.Model):
         return self.first_name + ' ' + self.last_name
 
 
-class Item(models.Model):
-    owner = models.ForeignKey('Profile', related_name='profile', on_delete=models.CASCADE)
-    description = models.TextField()
-    value = models.FloatField()
-
-
 class Ad(models.Model):
+    owner = models.ForeignKey('Profile', related_name='profile', on_delete=models.CASCADE)
     title = models.CharField(max_length=30)
-    item = models.OneToOneField('Item', related_name='ad_item', on_delete=models.CASCADE)
+    description = models.TextField()
     pub_date = models.DateTimeField(auto_now_add=True)
 
 
