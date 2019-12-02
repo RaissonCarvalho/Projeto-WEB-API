@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 
 class UserSerializer(ModelSerializer):
+
     class Meta:
         model = User
         fields = (
@@ -13,11 +14,23 @@ class UserSerializer(ModelSerializer):
         )
 
 
+class ProfileAdSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Ad
+        fields = (
+            'url',
+            'title'
+        )
+
+
 class ProfileSerializer(ModelSerializer):
     url = HyperlinkedIdentityField(
         view_name='profile-details',
         lookup_field='pk'
     )
+
+    ads = ProfileAdSerializer(many=True, read_only=True)
 
     class Meta:
         model = Profile
@@ -28,9 +41,14 @@ class ProfileSerializer(ModelSerializer):
             'phone_number',
             'city',
             'email',
+            'ads',
         )
 
     def create(self, validated_data):
+        users = User.objects.all()
+        for user in users:
+            if validated_data['email'] in user.email:
+                raise serializers.ValidationError('Email already exists')
         user = User.objects.create(
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
@@ -45,4 +63,34 @@ class ProfileSerializer(ModelSerializer):
             email=user.email,
             phone_number=validated_data['phone_number'],
             city=validated_data['city']
+        )
+
+
+class AdSerializer(ModelSerializer):
+    url = HyperlinkedIdentityField(
+        view_name='ad-details',
+        lookup_field='pk'
+    )
+    pub_date = serializers.ReadOnlyField(read_only=True)
+    owner = serializers.SlugRelatedField(queryset=Profile.objects.all(), slug_field='first_name')
+    profile = ProfileSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Ad
+        fields = (
+            'url',
+            'title',
+            'description',
+            'value',
+            'pub_date',
+            'owner',
+            'profile'
+        )
+
+    def create(self, validated_data):
+        return Ad.objects.create(
+            title=validated_data['title'],
+            description=validated_data['description'],
+            value=validated_data['value'],
+            owner=validated_data['owner'],
         )
