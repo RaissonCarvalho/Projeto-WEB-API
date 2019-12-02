@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Profile(models.Model):
     user = models.OneToOneField('auth.User', related_name='profile', on_delete=models.CASCADE)
     first_name = models.CharField(max_length=35)
@@ -17,12 +18,19 @@ class Ad(models.Model):
     owner = models.ForeignKey('Profile', related_name='profile', on_delete=models.CASCADE)
     title = models.CharField(max_length=30)
     description = models.TextField()
+    value = models.FloatField()
     pub_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-pub_date']
 
 
 class Message(models.Model):
     content = models.TextField()
     time = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['time']
 
 
 class Chat(models.Model):
