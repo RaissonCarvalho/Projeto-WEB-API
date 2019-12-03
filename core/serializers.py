@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 
 class UserSerializer(ModelSerializer):
+    date_joined = serializers.ReadOnlyField()
 
     class Meta:
         model = User
@@ -35,11 +36,16 @@ class ProfileSerializer(ModelSerializer):
     )
 
     ads = ProfileAdSerializer(many=True, read_only=True)
+    user = HyperlinkedIdentityField(
+        view_name='user-details',
+        lookup_field='pk',
+    )
 
     class Meta:
         model = Profile
         fields = (
             'url',
+            'user',
             'first_name',
             'last_name',
             'phone_number',
