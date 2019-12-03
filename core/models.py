@@ -15,7 +15,7 @@ class Profile(models.Model):
 
 
 class Ad(models.Model):
-    owner = models.ForeignKey('Profile', related_name='profile', on_delete=models.CASCADE)
+    owner = models.ForeignKey('Profile', related_name='ads', on_delete=models.CASCADE)
     title = models.CharField(max_length=30)
     description = models.TextField()
     value = models.FloatField()

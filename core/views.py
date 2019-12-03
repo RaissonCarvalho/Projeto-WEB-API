@@ -30,6 +30,18 @@ class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     name = 'profile-details'
 
 
+class AdList(generics.ListCreateAPIView):
+    queryset = Ad.objects.all()
+    serializer_class = AdSerializer
+    name = 'ad-list'
+
+
+class AdDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Ad.objects.all()
+    serializer_class = AdSerializer
+    name = 'ad-details'
+
+
 class ApiRoot(generics.GenericAPIView):
     name = 'API'
 
@@ -39,5 +51,6 @@ class ApiRoot(generics.GenericAPIView):
                 'documentation': reverse('documentation', request=request),
                 'users': reverse(UserList.name, request=request),
                 'profiles': reverse(ProfilesList.name, request=request),
+                'ads': reverse(AdList.name, request=request)
             }
         )

@@ -10,11 +10,15 @@ class UserSerializer(ModelSerializer):
         fields = (
             'pk',
             'username',
-            'is_superuser',
+            'date_joined',
         )
 
 
 class ProfileAdSerializer(serializers.HyperlinkedModelSerializer):
+    url = HyperlinkedIdentityField(
+        view_name='ad-details',
+        lookup_field='pk'
+    )
 
     class Meta:
         model = Ad
@@ -72,7 +76,7 @@ class AdSerializer(ModelSerializer):
         lookup_field='pk'
     )
     pub_date = serializers.ReadOnlyField(read_only=True)
-    owner = serializers.SlugRelatedField(queryset=Profile.objects.all(), slug_field='first_name')
+    owner = serializers.ReadOnlyField(source='owner.first_name')
     profile = ProfileSerializer(many=False, read_only=True)
 
     class Meta:
@@ -93,4 +97,14 @@ class AdSerializer(ModelSerializer):
             description=validated_data['description'],
             value=validated_data['value'],
             owner=validated_data['owner'],
+        )
+
+
+class MessageSerializer(ModelSerializer):
+
+    class Meta:
+        model = Message
+        fields = (
+            'content',
+            'time'
         )

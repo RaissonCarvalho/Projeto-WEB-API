@@ -4,6 +4,8 @@ from core.views import (
     UserDetails,
     ProfilesList,
     ProfileDetail,
+    AdList,
+    AdDetail,
     ApiRoot
 )
 from rest_framework_swagger.views import get_swagger_view
@@ -17,5 +19,7 @@ urlpatterns = [
     path('users/<int:pk>', UserDetails.as_view(), name='user-details'),
     path('profiles/', ProfilesList.as_view(), name='profile-list'),
     path('profiles/<int:pk>', ProfileDetail.as_view(), name='profile-details'),
+    path('ads/', AdList.as_view(), name='ad-list'),
+    path('ads/<int:pk>', AdDetail.as_view(), name='ad-details'),
     path('api-auth/', include('rest_framework.urls')),
 ]
