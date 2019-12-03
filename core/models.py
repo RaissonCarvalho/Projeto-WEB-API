@@ -26,6 +26,9 @@ class Ad(models.Model):
 
 
 class Message(models.Model):
+    related_ad = models.OneToOneField('Ad', related_name='related_ad', on_delete=models.CASCADE, default=None)
+    sender_profile = models.OneToOneField('Profile', related_name='sender_messages', on_delete=models.CASCADE)
+    reciver_profile = models.OneToOneField('Profile', related_name='reciver_messages', on_delete=models.CASCADE)
     content = models.TextField()
     time = models.DateTimeField(auto_now_add=True)
 
@@ -34,6 +37,4 @@ class Message(models.Model):
 
 
 class Chat(models.Model):
-    sender_profile = models.OneToOneField('Profile', related_name='sender', on_delete=models.CASCADE)
-    reciver_profile = models.OneToOneField('Profile', related_name='reciver', on_delete=models.CASCADE)
     message = models.ForeignKey('Message', related_name='message', on_delete=models.CASCADE)

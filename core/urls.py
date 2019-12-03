@@ -6,9 +6,12 @@ from core.views import (
     ProfileDetail,
     AdList,
     AdDetail,
+    MessagesList,
+    MessageDetail,
     ApiRoot
 )
 from rest_framework_swagger.views import get_swagger_view
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 schema_view = get_swagger_view(title='API Documentation')
 
@@ -21,5 +24,9 @@ urlpatterns = [
     path('profiles/<int:pk>', ProfileDetail.as_view(), name='profile-details'),
     path('ads/', AdList.as_view(), name='ad-list'),
     path('ads/<int:pk>', AdDetail.as_view(), name='ad-details'),
+    path('messages/', MessagesList.as_view(), name='messages-list'),
+    path('messages/<int:pk>', MessageDetail.as_view(), name='message-details'),
     path('api-auth/', include('rest_framework.urls')),
+    path('api/token', TokenObtainPairView.as_view()),
+    path('api/token/refresh', TokenRefreshView.as_view()),
 ]
