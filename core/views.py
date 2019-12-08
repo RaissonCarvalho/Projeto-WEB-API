@@ -2,6 +2,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework import generics
+from rest_framework import status
 from core.permissions import *
 from core.serializers import *
 from core.models import *
@@ -56,7 +57,22 @@ class MessagesList(generics.ListCreateAPIView):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     name = 'messages-list'
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
+
+    def perform_create(self, serializer):
+        sender_profile = Profile.objects.get(email=self.request.user.email)
+        ad = Ad.objects.get(title=self.request.data['related_ad'])
+        reciver_profile = ad.owner
+
+        if sender_profile == reciver_profile:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            serializer.save(
+                sender_profile=sender_profile,
+                reciver_profile=reciver_profile,
+                content=self.request.data['content'],
+                related_ad=ad
+            )
 
 
 class MessageDetail(generics.RetrieveUpdateDestroyAPIView):

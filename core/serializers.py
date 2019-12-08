@@ -95,8 +95,8 @@ class AdSerializer(ModelSerializer):
         lookup_field='pk'
     )
     pub_date = serializers.ReadOnlyField(read_only=True)
-    owner = serializers.ReadOnlyField(source='owner.first_name')
     profile = ProfileSerializer(many=False, read_only=True)
+    owner = serializers.SlugRelatedField(queryset=Profile.objects.all(), slug_field='first_name')
 
     class Meta:
         model = Ad
@@ -120,14 +120,32 @@ class AdSerializer(ModelSerializer):
 
 
 class MessageSerializer(ModelSerializer):
-    related_ad = serializers.SlugRelatedField(queryset=Ad.objects.all(), slug_field='owner')
+    url = HyperlinkedIdentityField(
+        view_name='message-details',
+        lookup_field='pk'
+    )
+
+    related_ad = serializers.SlugRelatedField(queryset=Ad.objects.all(), slug_field='title')
+    sender_profile = serializers.SlugRelatedField(slug_field='first_name', read_only=True)
+    reciver_profile = serializers.SlugRelatedField(slug_field='first_name', read_only=True)
 
     class Meta:
         model = Message
         fields = (
+            'url',
             'related_ad',
-            'reciver_profile',
-            'sender_profile',
             'content',
-            'time'
+            'sender_profile',
+            'reciver_profile',
+            'time',
+        )
+
+
+class ChatSerializer(ModelSerializer):
+    message = serializers.SlugRelatedField(queryset=Message.objects.all(), slug_field='content')
+
+    class Meta:
+        model = Chat
+        fields = (
+            'message'
         )
