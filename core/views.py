@@ -12,7 +12,7 @@ class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     name = 'user-list'
-    permission_classes = (IsSuperUser,)
+    # permission_classes = (IsSuperUser,)
 
 
 class UserDetails(generics.RetrieveUpdateAPIView):
@@ -20,8 +20,8 @@ class UserDetails(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
     name = 'user-details'
     lookup_field = 'pk'
-    permission_classes = (IsOwnerUserOrReadOnly,
-                          IsSuperUser,)
+    # permission_classes = (IsOwnerUserOrReadOnly,
+                          # IsSuperUser,)
 
 
 class ProfilesList(generics.ListCreateAPIView):
@@ -66,6 +66,39 @@ class MessagesList(generics.ListCreateAPIView):
 
         if sender_profile == reciver_profile:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        chats = Chat.objects.all()
+        for chat in chats:
+            if chats == None:
+                message = Message.objects.create(sender_profile=sender_profile,
+                                                 reciver_profile=reciver_profile,
+                                                 content=self.request.data['content'],
+                                                 related_ad=ad)
+                Chat.objects.create(
+                    message=message
+                )
+
+                serializer.save(
+                    sender_profile=sender_profile,
+                    reciver_profile=reciver_profile,
+                    content=self.request.data['content'],
+                    related_ad=ad
+                )
+            elif chat.message.sender_profile == sender_profile and chat.message.related_ad == ad:
+                message = Message.objects.create(sender_profile=sender_profile,
+                reciver_profile=reciver_profile,
+                content=self.request.data['content'],
+                related_ad=ad)
+                Chat.objects.create(
+                    message=message
+                )
+
+                serializer.save(
+                    sender_profile=sender_profile,
+                    reciver_profile=reciver_profile,
+                    content=self.request.data['content'],
+                    related_ad=ad
+                )
         else:
             serializer.save(
                 sender_profile=sender_profile,
@@ -79,7 +112,19 @@ class MessageDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     name = 'message-details'
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
+
+
+class ChatList(generics.ListAPIView):
+    queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+    name = 'chat-list'
+
+
+class ChatDetails(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+    name = 'chat-details'
 
 
 class ApiRoot(generics.GenericAPIView):
@@ -93,5 +138,6 @@ class ApiRoot(generics.GenericAPIView):
                 'profiles': reverse(ProfilesList.name, request=request),
                 'ads': reverse(AdList.name, request=request),
                 'messages': reverse(MessagesList.name, request=request),
+                'chat': reverse(ChatList.name, request=request)
             }
         )

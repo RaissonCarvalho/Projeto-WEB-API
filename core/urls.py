@@ -8,10 +8,12 @@ from core.views import (
     AdDetail,
     MessagesList,
     MessageDetail,
+    ChatList,
+    ChatDetails,
     ApiRoot
 )
 from rest_framework_swagger.views import get_swagger_view
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
 schema_view = get_swagger_view(title='API Documentation')
 
@@ -26,7 +28,9 @@ urlpatterns = [
     path('ads/<int:pk>', AdDetail.as_view(), name='ad-details'),
     path('messages/', MessagesList.as_view(), name='messages-list'),
     path('messages/<int:pk>', MessageDetail.as_view(), name='message-details'),
-    path('api-auth/', include('rest_framework.urls')),
-    path('api/token', TokenObtainPairView.as_view()),
-    path('api/token/refresh', TokenRefreshView.as_view()),
+    path('chats/', ChatList.as_view(), name='chat-list'),
+    path('chats/<int:pk>', ChatDetails.as_view(), name='chat-details'),
+    path('api-auth/', include('rest_auth.urls')),
+    path('api-auth/token', obtain_jwt_token),
+    path('api-auth/refresh-token', refresh_jwt_token),
 ]

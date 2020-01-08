@@ -46,6 +46,7 @@ class ProfileSerializer(ModelSerializer):
     class Meta:
         model = Profile
         fields = (
+            'id',
             'url',
             'first_name',
             'last_name',
@@ -95,7 +96,6 @@ class AdSerializer(ModelSerializer):
         lookup_field='pk'
     )
     pub_date = serializers.ReadOnlyField(read_only=True)
-    profile = ProfileSerializer(many=False, read_only=True)
     owner = serializers.SlugRelatedField(queryset=Profile.objects.all(), slug_field='first_name')
 
     class Meta:
@@ -107,7 +107,6 @@ class AdSerializer(ModelSerializer):
             'value',
             'pub_date',
             'owner',
-            'profile'
         )
 
     def create(self, validated_data):
