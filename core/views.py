@@ -45,6 +45,18 @@ class AdList(generics.ListCreateAPIView):
     name = 'ad-list'
     permission_classes = (IsAuthenticated,)
 
+    def perform_create(self, serializer):
+        profile = self.request.user.profile
+        # Ad.objects.create(
+        #     owner=profile,
+        #     title=self.request.data['title'],
+        #     description=self.request.data['description'],
+        #     value=self.request.data['value'],
+        # )
+        serializer.save(
+            owner=profile
+        )
+
 
 class AdDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Ad.objects.all()

@@ -96,7 +96,7 @@ class AdSerializer(ModelSerializer):
         lookup_field='pk'
     )
     pub_date = serializers.ReadOnlyField(read_only=True)
-    owner = serializers.SlugRelatedField(queryset=Profile.objects.all(), slug_field='first_name')
+    owner = ProfileSerializer(many=False, read_only=True)
 
     class Meta:
         model = Ad
@@ -109,13 +109,13 @@ class AdSerializer(ModelSerializer):
             'owner',
         )
 
-    def create(self, validated_data):
-        return Ad.objects.create(
-            title=validated_data['title'],
-            description=validated_data['description'],
-            value=validated_data['value'],
-            owner=validated_data['owner'],
-        )
+    # def create(self, validated_data):
+    #     return Ad.objects.create(
+    #         title=validated_data['title'],
+    #         description=validated_data['description'],
+    #         value=validated_data['value'],
+    #         owner=validated_data['owner'],
+    #     )
 
 
 class MessageSerializer(ModelSerializer):
