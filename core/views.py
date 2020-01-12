@@ -62,7 +62,7 @@ class AdDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Ad.objects.all()
     serializer_class = AdSerializer
     name = 'ad-details'
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsOwnerAdOrReadOnly)
 
 
 class MessagesList(generics.ListCreateAPIView):

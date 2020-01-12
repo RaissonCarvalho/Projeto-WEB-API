@@ -101,6 +101,7 @@ class AdSerializer(ModelSerializer):
     class Meta:
         model = Ad
         fields = (
+            'id',
             'url',
             'title',
             'description',
